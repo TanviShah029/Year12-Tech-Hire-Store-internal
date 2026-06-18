@@ -186,6 +186,9 @@ def save_records():
 
     if not contact_details_box.get() or not contact_details_box.get().replace(" ","").isdigit():
         errors.append("Contact Details cannot be empty or contain letters.")
+        
+    if len(contact_details_box.get()) > 10:
+        errors.append("Contact details must be less than 10 numbers")
 
     if hir_cale_etry.get() =="":
         errors.append("Please select a date.")
