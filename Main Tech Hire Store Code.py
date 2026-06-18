@@ -3,9 +3,10 @@
 from tkinter import *
 from tkinter import messagebox
 from tkinter import ttk
+from PIL import Image, ImageTk
 import json
-import random 
 import os
+import random 
 from tkcalendar import Calendar, DateEntry
 from datetime import date, datetime
 
@@ -19,7 +20,6 @@ ACCESSORIES = {
 }
 
 cart = []
-selected_computer_accessories = None
 
 # All colours hex code for every windows
 L_BLUE = "#ADD8E6"
@@ -50,6 +50,20 @@ def load_data():
 m_tool_bar = Frame(win, bg= NVY_BLUE)
 m_tool_bar.pack(side="top", fill="x", ipady=3)
 
+# logo
+logo_image = Image.open("Images/logo.png")
+logo_image = logo_image.resize((67, 67))
+logo_photo = ImageTk.PhotoImage(logo_image)
+
+logo_label = Label(
+    m_tool_bar,
+    image = logo_photo,
+    bg = NVY_BLUE
+)
+
+logo_label.image = logo_photo
+logo_label.place(relx = 0.97, rely = 0.5, anchor = "e")
+
 # Main title for tech hire store  
 m_tl = Label(m_tool_bar, text="Byte and Bolt Tech Hire", font=("Arial", 20, "bold"), bg=NVY_BLUE, fg=WHT)
 m_tl.pack(side="top", padx=10, pady=4)
@@ -67,6 +81,28 @@ drp_dwn_for_user.add_command(label="Hire", command=lambda: choice_set_for_menu("
 drp_dwn_for_user.add_command(label="Return", command=lambda: choice_set_for_menu("Return"))
 drp_dwn_for_user.add_command(label="Quit", command=lambda: choice_set_for_menu("Quit"))
 
+# Search button function 
+def open_page(page_name):
+    page_name = page_name.strip()
+
+    if page_name == "hire":
+        print("Loading Hire page...")
+        win.deiconify() 
+        if current_win[0] and current_win[0] != win:
+            current_win[0].destroy()
+        current_page[0] = "hire"
+        current_win[0] = win
+
+    elif page_name == "return":
+        print("Loading Return page...")
+        computer_accessories() 
+
+    elif page_name == "quit":
+        exit_program()
+        
+    else:
+        messagebox.showerror("Invalid Page", "Please enter either Hire or return.")
+        
 # Search button for user to search anything realted to program
 # Choice function to show what user selected  
 def choice_set_for_menu(value):
@@ -197,7 +233,7 @@ def computer_accessories():
     if current_page[0]=="computer_accessories":
         return
     if current_win[0] is not None:
-         current_win[0].destroy()
+        current_win[0].strip()
     win.withdraw()
    
     cmpacc_win = Toplevel()
@@ -260,6 +296,15 @@ def computer_accessories():
     price_box = Label(cmpacc_win, font=("Arial", 14, "bold"), bg=L_BLUE)
     price_box.pack()
 
+    # Quantity label and entry
+    quantity_label = Label(cmpacc_win, text= "Quantity:", font=("Arial", 11, "bold"), bg=L_BLUE, fg=NVY_BLUE)
+    quantity_label.pack()
+    quantity_label.place(relx= 0.20, rely= 0.60)
+
+    quantity_box= Entry(cmpacc_win)
+    quantity_box.pack()
+    quantity_box.place(relx= 0.40, rely= 0.60)
+    
     # buttons for this page
     add_button = Button(cmpacc_win, text="Add to Cart", bg= NVY_BLUE, fg=WHT, font=("Arial", 10, "bold"), width = 15, height =2, command=add)
     add_button.pack()
@@ -320,16 +365,30 @@ def view_receipt_page():
     rece_title = Label( rece_frame, text="BYTE & BOLT RECEIPT", font=("Arial", 16, "bold"), bg=NVY_BLUE, fg=WHT)
     rece_title.pack(side="top", padx=10, pady=4)
 
+    # logo
+    logo_image = Image.open("Images/logo.png")
+    logo_image = logo_image.resize((67, 67))
+    logo_photo = ImageTk.PhotoImage(logo_image)
+
+    logo_label = Label(
+    rece_frame,
+    image = logo_photo,
+    bg = NVY_BLUE
+    )
+
+    logo_label.image = logo_photo
+    logo_label.place(relx = 0.97, rely = 0.5, anchor = "e")
+
     def exit_page():
         if current_win[0] is not None:
             try:
                 current_win[0].destroy()
             except:
                 pass
-        win.destroy()       
+        win.destroy()
 
     def gene_receipt_no():
-        text = "" 
+        text = ""
         random_number = random.randint(10000, 99999)
         receipt = text + str(random_number)
         return receipt 
@@ -347,17 +406,7 @@ def view_receipt_page():
         receipt_entry.pack()
         receipt_entry.place(relx=0.55, rely=0.25)
 
-        recei_name_lbl= Label(view_receipt_win,text="Customer name: ",bg=L_BLUE, fg=NVY_BLUE, font=("Arial",13, "bold"),width=15)
-        recei_name_lbl.pack()
-
-        name_lbl= Label(view_receipt_win,text=str(new_record["cus_name"]),bg=L_BLUE, fg=NVY_BLUE, font=("Arial",13, "bold"),width=15)
-        name_lbl.pack()
-        
-        
-        label = Label(win, text="")
-        label.pack()
-
-    view_receipt()  
+    view_receipt()
 
 # I made the buttons for hire page
 bar_btn_computer_accessories= Button(text="Computer Accessories", bg= NVY_BLUE, fg=WHT, font=("Arial", 10, "bold"), width = 17, height =2, command=computer_accessories)
