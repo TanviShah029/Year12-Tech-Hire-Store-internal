@@ -1,1 +1,1 @@
-# Year12-Tech-Hire-Store-interanl
+# Year12-Tech-Hire-Store-internal
