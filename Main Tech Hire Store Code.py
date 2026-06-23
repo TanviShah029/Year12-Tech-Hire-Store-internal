@@ -1,17 +1,21 @@
-# Tech Hire Store Program
-# I made this program for my internal
+# Tech Hire Store Program.
+# I made this program for my internal.
+
 from tkinter import *
 from tkinter import messagebox
 from tkinter import ttk
-from PIL import Image, ImageTk
 import json
+import random
 import os
-import random 
 from tkcalendar import Calendar, DateEntry
 from datetime import date, datetime
 
-# Accessories for sale
-# name, picture
+customer_info = {}
+hired_details = {}
+
+# Accessories for sale.
+# Name and picture. 
+
 ACCESSORIES = {
     "Gaming Mouse": ["Images/Gaming Mouse.png", 55],
     "Keyboard": ["Images/Keyboard.png", 150],
@@ -20,60 +24,47 @@ ACCESSORIES = {
 }
 
 cart = []
+selected_computer_accessories = None
 
-# All colours hex code for every windows
+# All colours hex code for every window.
 L_BLUE = "#ADD8E6"
 NVY_BLUE= "#056b7d"
 WHT = "#FFFFFF"
 
-# Windows page
+# Windows page.
 current_page= [None]
 current_win= [None]
 
-# Make first window
+# My first window for the store.
 win = Tk()
 win.title("Byte & Bolt Tech Hire")
 win.geometry("600x500")
 win.configure(bg="#ADD8E6")
 
-# Save function to save data
+# Save function to save customer details. 
 def load_data():
-    if os.path.exists("customer_details.pdf"):
-        with open("customer_details.pdf","r") as file:
+    if os.path.exists("customer_details.json"):
+        with open("customer_details.json","r") as file:
             content=file.read()
             if content.strip() =="":
                 return[]
             return json.loads(content)
     return[]
 
-# Tool bar which is shown in every page
+# Tool bar which is shown in every page.
 m_tool_bar = Frame(win, bg= NVY_BLUE)
 m_tool_bar.pack(side="top", fill="x", ipady=3)
 
-# logo
-logo_image = Image.open("Images/logo.png")
-logo_image = logo_image.resize((67, 67))
-logo_photo = ImageTk.PhotoImage(logo_image)
-
-logo_label = Label(
-    m_tool_bar,
-    image = logo_photo,
-    bg = NVY_BLUE
-)
-
-logo_label.image = logo_photo
-logo_label.place(relx = 0.97, rely = 0.5, anchor = "e")
-
-# Main title for tech hire store  
+# Main title for tech hire store.  
 m_tl = Label(m_tool_bar, text="Byte and Bolt Tech Hire", font=("Arial", 20, "bold"), bg=NVY_BLUE, fg=WHT)
 m_tl.pack(side="top", padx=10, pady=4)
 
-# Menu button showing all pages
+# Menu button for every page.
 main_btn_dsp = Menubutton(m_tool_bar, text="☰", font = ("Arial", 15), bg=L_BLUE)
 main_btn_dsp.pack(side="left")
 main_btn_dsp.place(relx= 0.05, rely= 0.15)
 
-# Dropdown list for the user to pick from
+# Dropdown list for the user to select from. 
 drp_dwn_for_user = Menu(main_btn_dsp, tearoff=0)
 main_btn_dsp["menu"] = drp_dwn_for_user  
 
@@ -81,34 +72,12 @@ drp_dwn_for_user.add_command(label="Hire", command=lambda: choice_set_for_menu("
 drp_dwn_for_user.add_command(label="Return", command=lambda: choice_set_for_menu("Return"))
 drp_dwn_for_user.add_command(label="Quit", command=lambda: choice_set_for_menu("Quit"))
 
-# Search button function 
-def open_page(page_name):
-    page_name = page_name.strip()
-
-    if page_name == "hire":
-        print("Loading Hire page...")
-        win.deiconify() 
-        if current_win[0] and current_win[0] != win:
-            current_win[0].destroy()
-        current_page[0] = "hire"
-        current_win[0] = win
-
-    elif page_name == "return":
-        print("Loading Return page...")
-        computer_accessories() 
-
-    elif page_name == "quit":
-        exit_program()
-        
-    else:
-        messagebox.showerror("Invalid Page", "Please enter either Hire or return.")
-        
-# Search button for user to search anything realted to program
-# Choice function to show what user selected  
+# Search button for user to search any pages. 
+# Choice function to show what user selected.   
 def choice_set_for_menu(value):
     print(f"Selected: {search}")
 
-# Search function for user to use
+# Search function for user to use. 
 def search():
     if not etry.winfo_viewable():
         etry.pack(side="left", padx=5)
@@ -122,14 +91,14 @@ srch_btn_user = Button(m_tool_bar, text="🔍", font = ("Arial", 13), bg= L_BLUE
 srch_btn_user.pack(side="left")
 srch_btn_user.place(relx= 0.13, rely= 0.15)
 
-# Date of hire field for user
+# Date of hire field for user. 
 frm_frame_hire = Frame(win, bg=L_BLUE)
 frm_frame_hire.pack(side="top", pady=40)
 
 hir_label = Label(frm_frame_hire, text="Date of Hire:", font=("Arial", 12, "bold"), bg=L_BLUE, fg=NVY_BLUE)
 hir_label.pack(side="left", padx=3)
 
-# Calendar picker for user to pick a hire date from
+# Calendar picker for user to pick a date from.
 hir_cale_etry = DateEntry(
     frm_frame_hire,
     width=11,
@@ -139,33 +108,36 @@ hir_cale_etry = DateEntry(
     headerbg= L_BLUE,
     noramlbg=WHT,    
     selectmode='day',
-    year=2026, month=6, day=15
 )
+
 hir_cale_etry.pack(side="left", padx=5)
 
-# First name for user to enter
+# Deleting the default date. 
+hir_cale_etry.delete(0, END)
+
+# First name for user to enter.
 first_name_label = Label(win, text= "First Name:", font=("Arial", 12, "bold"), bg=L_BLUE, fg=NVY_BLUE)
 first_name_label.pack()
 
 first_name_box= Entry(win)
 first_name_box.pack(pady=5)
 
-# Last name for user to enter
+# Last name for user to enter.
 last_name_label = Label(win, text= "Last Name:", font=("Arial", 12, "bold"), bg=L_BLUE, fg=NVY_BLUE)
 last_name_label.pack()
 
 last_name_box= Entry(win)
 last_name_box.pack(pady=5)
 
-# Contact Details for user to enter
+# Contact Details for user to enter.
 contact_details_label = Label(win, text= "Contact Details:", font=("Arial", 11, "bold"), bg=L_BLUE, fg=NVY_BLUE)
 contact_details_label.pack()
 
 contact_details_box= Entry(win)
 contact_details_box.pack(pady=5)
 
-# I made save records for all the data of customer details to save
-# I made the validations for all fields in hire page
+# I made save records for all the data of customer details to save.
+# I made the validations for all fields in hire page.
 def load_data():
     if os.path.exists("customer_details.json"):
         with open("customer_details.json","r") as file:
@@ -179,14 +151,14 @@ def save_records():
     errors=[]
 
     if not first_name_box.get() or not first_name_box.get().replace(" ","").isalpha():
-        errors.append("First name cannot be empty or contain integers.")
+        errors.append("First name cannot be empty, contain integers, or contain symbols.")
 
     if not last_name_box.get() or not last_name_box.get().replace(" ","").isalpha():
         errors.append("Last name cannot be empty or contain integers.")
 
     if not contact_details_box.get() or not contact_details_box.get().replace(" ","").isdigit():
         errors.append("Contact Details cannot be empty or contain letters.")
-        
+
     if len(contact_details_box.get()) > 10:
         errors.append("Contact details must be less than 10 numbers")
 
@@ -212,31 +184,36 @@ def save_records():
         "contact_details": contact_details_box.get().strip(),
         "hire_date": hir_cale_etry.get()
     }
+
+    customer_info["first_name"]=first_name_box.get().strip()
+    customer_info["last_name"] = last_name_box.get().strip()
+    customer_info["contact_details"] =  contact_details_box.get().strip()
+    customer_info["hire_date"] = hir_cale_etry.get()
    
     current_entries.append(new_record)
 
-    with open("Customer details.json", "w") as file:
+    with open("customer_details.json", "w") as file:
         json.dump(current_entries, file, indent=4)
        
     messagebox.showinfo("Success", "Record saved successfully!")
 
-# I created a deleting record
+# I created a deleting record function. 
 def delete_records():
-    file = open("Customer details.json", "w")
+    file = open("customer_details.json", "w")
     file.close()
 
     messagebox.showinfo("Success", "All records are deleted")
 
-# I created an exit program
+# I created a function to exit the program. 
 def exit_program():
     win.destroy()
 
-# I made a new window for computer accessories
+# I made a new window for computer accessories. 
 def computer_accessories():
     if current_page[0]=="computer_accessories":
         return
     if current_win[0] is not None:
-        current_win[0].strip()
+         current_win[0].destroy()
     win.withdraw()
    
     cmpacc_win = Toplevel()
@@ -255,15 +232,15 @@ def computer_accessories():
 
     cmpacc_win.protocol("WM_DELETE_WINDOW", close)
 
-    # Tool bar which is shown in every page
+    # Tool bar which is shown in every page.
     acc_frame= Frame(cmpacc_win, bg= NVY_BLUE)
     acc_frame.pack(side="top", fill="x", ipady=3)
 
-    # Main title for tech hire store
+    # Main title for tech hire store.
     acc_title = Label(acc_frame, text="Computer Accessories", font=("Arial", 17, "bold"), bg=NVY_BLUE, fg=WHT)
     acc_title.pack(side="top", padx=10, pady=4)
 
-    # I made a dropdown to show all computer accessories to sell  
+    # I made a dropdown to show all computer accessories list.  
     def show_computer_accessories(event=None):
         choice= selected_computer_accessories.get()
         if choice in ACCESSORIES:
@@ -284,31 +261,22 @@ def computer_accessories():
             cart.append(Accessories)
             status_box.config(text= Accessories + " added")
            
-    # dropdown list
+    # Dropdown list.
     selected_computer_accessories = StringVar()
     dropdown = ttk.Combobox(cmpacc_win, textvariable=selected_computer_accessories, values=list(ACCESSORIES.keys()))
     values=list(ACCESSORIES.keys())
     dropdown.pack(pady=30)
     dropdown.bind("<<ComboboxSelected>>", show_computer_accessories)
 
-    # Images show up here
+    # Images show up here.
     image_box = Label(cmpacc_win, font=("Arial", 12), bg=L_BLUE)
     image_box.pack(pady=10)
 
-    # Price Label goes here
+    # Price Label goes here.
     price_box = Label(cmpacc_win, font=("Arial", 14, "bold"), bg=L_BLUE)
     price_box.pack()
 
-    # Quantity label and entry
-    quantity_label = Label(cmpacc_win, text= "Quantity:", font=("Arial", 11, "bold"), bg=L_BLUE, fg=NVY_BLUE)
-    quantity_label.pack()
-    quantity_label.place(relx= 0.20, rely= 0.60)
-
-    quantity_box= Entry(cmpacc_win)
-    quantity_box.pack()
-    quantity_box.place(relx= 0.40, rely= 0.60)
-    
-    # buttons for this page
+    # Buttons for this page.
     add_button = Button(cmpacc_win, text="Add to Cart", bg= NVY_BLUE, fg=WHT, font=("Arial", 10, "bold"), width = 15, height =2, command=add)
     add_button.pack()
     add_button.place(relx= 0.15, rely=0.70)
@@ -317,7 +285,7 @@ def computer_accessories():
     add_view_receipt_button.pack()
     add_view_receipt_button.place(relx= 0.50, rely=0.70)
 
-    # status message
+    # Status message. 
     status_box = Label(cmpacc_win, font=("Arial", 10, "bold"), bg=L_BLUE, fg=NVY_BLUE, width = 25, height =2)
     status_box.place(relx=0.25, rely =0.78)
 
@@ -336,7 +304,7 @@ def computer_accessories():
     bar_btn_exit_page.pack()
     bar_btn_exit_page.place(relx= 0.32, rely=0.86)
 
-# I made a new window fro viewing receipt
+# I made a new window for viewing receipt.
 def view_receipt_page():
     if current_page[0]=="view_receipt_win":
         return
@@ -360,27 +328,13 @@ def view_receipt_page():
 
     view_receipt_win.protocol("WM_DELETE_WINDOW", close)
 
-    # Tool bar which is shown in every page
+    # Tool bar which is shown in every page.
     rece_frame= Frame(view_receipt_win, bg= NVY_BLUE)
     rece_frame.pack(side="top", fill="x", ipady=4)
 
-    # Main title for tech hire store
+    # Main title for tech hire store.
     rece_title = Label( rece_frame, text="BYTE & BOLT RECEIPT", font=("Arial", 16, "bold"), bg=NVY_BLUE, fg=WHT)
     rece_title.pack(side="top", padx=10, pady=4)
-
-    # logo
-    logo_image = Image.open("Images/logo.png")
-    logo_image = logo_image.resize((67, 67))
-    logo_photo = ImageTk.PhotoImage(logo_image)
-
-    logo_label = Label(
-    rece_frame,
-    image = logo_photo,
-    bg = NVY_BLUE
-    )
-
-    logo_label.image = logo_photo
-    logo_label.place(relx = 0.97, rely = 0.5, anchor = "e")
 
     def exit_page():
         if current_win[0] is not None:
@@ -388,15 +342,15 @@ def view_receipt_page():
                 current_win[0].destroy()
             except:
                 pass
-        win.destroy()
+        win.destroy()      
 
     def gene_receipt_no():
         text = ""
         random_number = random.randint(10000, 99999)
         receipt = text + str(random_number)
-        return receipt 
+        return receipt
 
-    # Receipt created with customer details
+    # Receipt created with customer details.
     def view_receipt():
         receipt_no=gene_receipt_no()
         receipt_variable = StringVar(value=str(receipt_no))
@@ -409,9 +363,15 @@ def view_receipt_page():
         receipt_entry.pack()
         receipt_entry.place(relx=0.55, rely=0.25)
 
-    view_receipt()
+        recei_name_lbl= Label(view_receipt_win,text="Customer name: "+customer_info.get("first_name","")+" "+customer_info.get("last_name",""),bg=L_BLUE, fg=NVY_BLUE, font=("Arial",13, "bold"),width=30)
+        recei_name_lbl.pack()
+      
+        label = Label(win, text="")
+        label.pack()
 
-# I made the buttons for hire page
+    view_receipt()  
+
+# I made the buttons for hire page.
 bar_btn_computer_accessories= Button(text="Computer Accessories", bg= NVY_BLUE, fg=WHT, font=("Arial", 10, "bold"), width = 17, height =2, command=computer_accessories)
 bar_btn_computer_accessories.pack(padx=1, pady=1)
 bar_btn_computer_accessories.place(relx= 0.25, rely=0.70)
