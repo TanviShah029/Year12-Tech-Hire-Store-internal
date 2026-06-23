@@ -4,6 +4,7 @@
 from tkinter import *
 from tkinter import messagebox
 from tkinter import ttk
+from PIL import Image, ImageTk
 import json
 import random
 import os
@@ -213,7 +214,7 @@ def computer_accessories():
     if current_page[0]=="computer_accessories":
         return
     if current_win[0] is not None:
-         current_win[0].destroy()
+        current_win[0].destroy()
     win.withdraw()
    
     cmpacc_win = Toplevel()
@@ -226,7 +227,7 @@ def computer_accessories():
 
     def close():
         current_page[0]= None
-        current_win[0]= ""
+        current_win[0]= None 
         win.deiconify()
         cmpacc_win.destroy()
 
@@ -322,7 +323,7 @@ def view_receipt_page():
 
     def close():
         current_page[0]= None
-        current_win[0]= ""
+        current_win[0]= None
         win.deiconify()
         view_receipt_win.destroy()
 
@@ -366,7 +367,7 @@ def view_receipt_page():
         recei_name_lbl= Label(view_receipt_win,text="Customer name: "+customer_info.get("first_name","")+" "+customer_info.get("last_name",""),bg=L_BLUE, fg=NVY_BLUE, font=("Arial",13, "bold"),width=30)
         recei_name_lbl.pack()
       
-        label = Label(win, text="")
+        label = Label(view_receipt_win, text="", bg=L_BLUE)
         label.pack()
 
     view_receipt()  
