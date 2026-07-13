@@ -72,7 +72,7 @@ logo_image = logo_image.resize((67, 67))
 logo_photo = ImageTk.PhotoImage(logo_image)
 
 logo_label = Label(
-rece_frame,
+m_tool_bar,
 image = logo_photo,
 bg = NVY_BLUE
 )
@@ -233,8 +233,6 @@ def save_records():
 
     messagebox.showinfo("Success", "Record saved successfully!")
 
-    cart.clear()
-
 # I created a deleting record function. 
 def delete_records():
     records = load_data()
@@ -332,7 +330,7 @@ def computer_accessories():
     logo_photo = ImageTk.PhotoImage(logo_image)
 
     logo_label = Label(
-        rece_frame,
+        acc_frame,
         image = logo_photo,
         bg = NVY_BLUE
         )
@@ -456,7 +454,7 @@ def view_receipt_page():
 
         else:
             current_win[0] = None
-            current_win[0] = None
+            current_page[0] = None
             win.deiconify()
         
     # Tool bar which is shown in every page.
@@ -568,9 +566,6 @@ def accessories_return():
     current_win[0] = return_win_shown
     current_page[0] = "accessories_return"
 
-    # All the records are saved here.
-    rcrds_svd_all = load_data()
-
     # Function created for closing window pages. 
     def close():
         global current_page, current_win, return_page_win
@@ -602,9 +597,11 @@ def accessories_return():
     def rtrn_search():
         if not etry_rtrn.winfo_viewable():
             etry_rtrn.pack(side="left", padx=5)
-            srch_rtrn_drp_dwn.config(text="Go")
-        else:
-            text = etry.get().strip().lower()
+            srch_btn_return.config(text="Go")
+            return
+
+        text = etry_rtrn.get().strip().lower()
+        
         if text == "hire":
             computer_accessories()
         elif text == "return":
@@ -712,7 +709,7 @@ def accessories_return():
         Label(rcpt_no_win, text=f"Receipt Number: {customer_info['receipt_number']}", bg=L_BLUE, fg=NVY_BLUE, font=("Arial", 12, "bold")).pack()
 
     # Function for searching the data of the customer.
-    def lkup_customer_run(mode_action):
+    def lkup_cst_run_search(mode_action):
         global customer_info, cart
 
         frst_input_of_customer = frst_box_rtrn.get().strip()
@@ -768,16 +765,16 @@ def accessories_return():
     bar_btn_customer = Frame(return_win_shown, bg=L_BLUE)
     bar_btn_customer.pack(pady=15)
 
-    bar_btn_view_purchases= Button(bar_btn_customer, text="View purchases", bg=NVY_BLUE, fg=WHT, font=("Arial", 11, "bold"), width=15, height=2, command=lambda: lkup_customer_run("view"))
+    bar_btn_view_purchases= Button(bar_btn_customer, text="View purchases", bg=NVY_BLUE, fg=WHT, font=("Arial", 11, "bold"), width=15, height=2, command=lambda:lkup_cst_run_search("view"))
     bar_btn_view_purchases.pack(side="left", padx=2)
 
-    bar_btn_return_item = Button(bar_btn_customer, text="Return item", bg=NVY_BLUE, fg=WHT, font=("Arial", 11, "bold"), width=15, height=2, command=lambda: lkup_customer_run("return"))
+    bar_btn_return_item = Button(bar_btn_customer, text="Return item", bg=NVY_BLUE, fg=WHT, font=("Arial", 11, "bold"), width=15, height=2, command=lambda:lkup_cst_run_search("return"))
     bar_btn_return_item.pack(side="left", padx=2)
 
     bar_btn_return= Label(return_win_shown, text="Return amount: $0", bg=L_BLUE, fg=NVY_BLUE, font=("Arial", 11, "bold"))
     bar_btn_return.pack(pady=5)
     
-    bar_btn_receipt_no = Button(bar_btn_customer, text="Receipt number", bg=NVY_BLUE, fg=WHT, font=("Arial", 11, "bold"), width=15, height=2, command=lambda:lkup_customer_run("rcpt_only"))
+    bar_btn_receipt_no = Button(bar_btn_customer, text="Receipt number", bg=NVY_BLUE, fg=WHT, font=("Arial", 11, "bold"), width=15, height=2, command=lambda:lkup_cst_run_search("rcpt_only"))
     bar_btn_receipt_no.pack(side="left", padx=2)
 
     quit_btn = Button(return_win_shown, text="Quit", bg=NVY_BLUE, fg=WHT, font=("Arial", 11, "bold"), width=15, height=2, command=close)
